@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="description"
+        content="Responsive internship board for finding internships by title, domain, and work mode."
+    >
+
+    <title>Internship Board | EdVyro Task 02</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Header -->
+    <header class="site-header">
+        <div class="container header-content">
+            <div>
+                <p class="eyebrow">EDVYRO • TASK 02</p>
+                <h1>Responsive Internship Board</h1>
+                <p class="header-description">
+                    Explore internship opportunities by role, domain, and work mode.
+                </p>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Search and Filters -->
+        <section class="search-section" aria-labelledby="search-heading">
+            <div class="container">
+
+                <div class="section-heading">
+                    <h2 id="search-heading">Find an Internship</h2>
+                    <p>
+                        Search and filter available internship opportunities.
+                    </p>
+                </div>
+
+                <form id="filterForm" class="filter-form">
+
+                    <div class="form-group search-group">
+                        <label for="searchInput">Search internships</label>
+
+                        <div class="search-input-wrapper">
+                            <input
+                                type="search"
+                                id="searchInput"
+                                name="search"
+                                placeholder="Search by title, skill, location..."
+                                autocomplete="off"
+                            >
+
+                            <button
+                                type="submit"
+                                class="search-button"
+                                aria-label="Search internships"
+                            >
+                                Search
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="domainFilter">Domain</label>
+
+                        <select id="domainFilter" name="domain">
+                            <option value="">All domains</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="modeFilter">Work mode</label>
+
+                        <select id="modeFilter" name="mode">
+                            <option value="">All work modes</option>
+                        </select>
+                    </div>
+
+                    <button
+                        type="button"
+                        id="clearFilters"
+                        class="clear-button"
+                    >
+                        Clear filters
+                    </button>
+
+                </form>
+
+            </div>
+        </section>
+
+        <!-- Internship Listings -->
+        <section class="internships-section" aria-labelledby="internships-heading">
+            <div class="container">
+
+                <div class="results-header">
+                    <div>
+                        <h2 id="internships-heading">Available Internships</h2>
+
+                        <p
+                            id="resultsCount"
+                            class="results-count"
+                            aria-live="polite"
+                        >
+                            Loading internships...
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Loading State -->
+                <div
+                    id="loadingState"
+                    class="state-message"
+                    role="status"
+                >
+                    <div class="loader" aria-hidden="true"></div>
+                    <p>Loading internships...</p>
+                </div>
+
+                <!-- Error State -->
+                <div
+                    id="errorState"
+                    class="state-message error-state"
+                    role="alert"
+                    hidden
+                >
+                    <h3>Unable to load internships</h3>
+
+                    <p>
+                        Something went wrong while loading the internship records.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="retryButton"
+                        class="primary-button"
+                    >
+                        Retry
+                    </button>
+                </div>
+
+                <!-- Empty State -->
+                <div
+                    id="emptyState"
+                    class="state-message"
+                    hidden
+                >
+                    <div class="empty-icon" aria-hidden="true">🔎</div>
+
+                    <h3>No internships found</h3>
+
+                    <p>
+                        Try changing your search or filter options.
+                    </p>
+
+                    <button
+                        type="button"
+                        id="emptyClearButton"
+                        class="primary-button"
+                    >
+                        Clear filters
+                    </button>
+                </div>
+
+                <!-- Internship Cards -->
+                <div
+                    id="internshipList"
+                    class="internship-grid"
+                    aria-live="polite"
+                ></div>
+
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Internship Details Dialog -->
+    <dialog id="detailsDialog" class="modal">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <p class="modal-label">Internship Details</p>
+                    <h2 id="detailsTitle">Internship</h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="close-button"
+                    id="closeDetailsButton"
+                    aria-label="Close internship details"
+                >
+                    ×
+                </button>
+            </div>
+
+            <div id="detailsContent"></div>
+
+            <div class="modal-actions">
+                <button
+                    type="button"
+                    id="detailsApplyButton"
+                    class="primary-button"
+                >
+                    Apply Now
+                </button>
+
+                <button
+                    type="button"
+                    id="detailsCancelButton"
+                    class="secondary-button"
+                >
+                    Close
+                </button>
+            </div>
+
+        </div>
+    </dialog>
+
+    <!-- Application Dialog -->
+    <dialog id="applicationDialog" class="modal">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <div>
+                    <p class="modal-label">Application</p>
+                    <h2 id="applicationTitle">Apply for Internship</h2>
+                </div>
+
+                <button
+                    type="button"
+                    class="close-button"
+                    id="closeApplicationButton"
+                    aria-label="Close application form"
+                >
+                    ×
+                </button>
+            </div>
+
+            <form id="applicationForm" novalidate>
+
+                <input
+                    type="hidden"
+                    id="applicationInternshipId"
+                    name="internshipId"
+                >
+
+                <div class="form-group">
+                    <label for="applicantName">Full name</label>
+
+                    <input
+                        type="text"
+                        id="applicantName"
+                        name="name"
+                        autocomplete="name"
+                        required
+                    >
+
+                    <p
+                        class="field-error"
+                        id="nameError"
+                        hidden
+                    >
+                        Please enter your full name.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="applicantEmail">Email address</label>
+
+                    <input
+                        type="email"
+                        id="applicantEmail"
+                        name="email"
+                        autocomplete="email"
+                        required
+                    >
+
+                    <p
+                        class="field-error"
+                        id="emailError"
+                        hidden
+                    >
+                        Please enter a valid email address.
+                    </p>
+                </div>
+
+                <div class="form-group">
+                    <label for="portfolioUrl">
+                        Portfolio URL
+                        <span class="optional">(optional)</span>
+                    </label>
+
+                    <input
+                        type="url"
+                        id="portfolioUrl"
+                        name="portfolio"
+                        placeholder="https://example.com"
+                        autocomplete="url"
+                    >
+
+                    <p
+                        class="field-error"
+                        id="portfolioError"
+                        hidden
+                    >
+                        Please enter a valid portfolio URL.
+                    </p>
+                </div>
+
+                <div
+                    id="applicationMessage"
+                    class="application-message"
+                    role="status"
+                    hidden
+                ></div>
+
+                <div class="modal-actions">
+
+                    <button
+                        type="submit"
+                        class="primary-button"
+                    >
+                        Submit Application
+                    </button>
+
+                    <button
+                        type="button"
+                        id="cancelApplicationButton"
+                        class="secondary-button"
+                    >
+                        Cancel
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+    </dialog>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <p>
+                Responsive Internship Board • EdVyro Full Stack Development • Task 02
+            </p>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
