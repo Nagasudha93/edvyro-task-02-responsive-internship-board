@@ -1,0 +1,4 @@
+api/node_modules/
+api/*.db-shm
+api/*.db-wal
+.env

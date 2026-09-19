@@ -102,7 +102,7 @@ async function loadInternships() {
     try {
 
         const response = await fetch(
-            "internship-records-sample.json"
+            "http://localhost:5000/api/internships"
         );
 
         if (!response.ok) {
